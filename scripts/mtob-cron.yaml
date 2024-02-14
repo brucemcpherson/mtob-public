@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mtob-cron
+  namespace: gcp-stg
+spec:
+  schedule: "0 0/1 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      podFailurePolicy:
+        rules:
+        - action: FailJob
+          onExitCodes:
+            containerName: mtob
+            operator: In
+            values: [88]
+      template:
+        spec:
+          serviceAccountName: mtob-robot-gcp-stg
+          containers:
+          - envFrom:
+            - secretRef:
+                name: doppler-secrets
+            image: yourregion-docker.pkg.dev/yourproject/yourartifactrepo/yourimage:latest
+            name: mtob
+            env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          restartPolicy: Never
+    

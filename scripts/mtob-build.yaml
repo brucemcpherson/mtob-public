@@ -1,0 +1,19 @@
+
+steps:
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: 
+    - "build"
+    - "--file"
+    - "mtob-Dockerfile"
+    - "--tag"
+    - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACTS}/${_GCP_IMAGE}"
+    - "."
+
+substitutions: 
+  _REGION: yourregion
+  _ARTIFACTS: yourartifactrepo
+  _GCP_IMAGE: yourimage
+
+images:
+  - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACTS}/${_GCP_IMAGE}"

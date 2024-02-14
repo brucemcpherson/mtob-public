@@ -1,0 +1,9 @@
+FROM gcr.io/cloud-builders/gcloud-slim
+COPY ./ /
+
+RUN curl "https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu2004-x86_64-100.9.4.tgz" --output mdb.tgz
+RUN tar -zxvf mdb.tgz && mv mongodb-database-tools-ubuntu2004-x86_64-100.9.4 mdb
+RUN cp mdb/bin/* /usr/local/bin/ && rm mdb.tgz && rm -r mdb
+
+ENTRYPOINT [ "/bin/bash"]
+CMD ["mtob-all.bash"]
